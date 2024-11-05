@@ -9,23 +9,41 @@ import SwiftUI
 import PhotosUI
 
 struct ContentView: View {
-    @State private var pickerItem: PhotosPickerItem?
-    @State private var selectedImage: Image?
+    @State private var processedImage: Image?
+    @State private var filterIntensity = 0.5
     
     var body: some View {
-        VStack {
-            PhotosPicker("Select a picture", selection: $pickerItem, matching: .images)
-            selectedImage?
-                .resizable()
-                .scaledToFit()
-        }.onChange(of: pickerItem) {
-            Task {
-                selectedImage = try await pickerItem?.loadTransferable(type: Image.self)
+        NavigationStack{
+            VStack {
+                Spacer()
+                if let processedImage {
+                    processedImage
+                        .resizable()
+                        .scaledToFit()
+                } else {
+                    ContentUnavailableView("No picture", systemImage: "photo.badge.plus", description: Text("Tap to import a photo"))
+                }
+                Spacer()
+                HStack {
+                    Text("Intensity")
+                    Slider(value: $filterIntensity)
+                }
+                .padding(.vertical)
+                
+                HStack {
+                    Button("Change filter", action: changeFilter)
+                    Spacer()
+                    
+                }
             }
+            .padding([.horizontal, .bottom])
+            .navigationTitle("Instafilter")
         }
     }
     
-
+    func changeFilter() {
+        
+    }
 }
 
 #Preview {
