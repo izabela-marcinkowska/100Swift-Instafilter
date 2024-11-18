@@ -9,6 +9,7 @@ import SwiftUI
 import PhotosUI
 import CoreImage
 import CoreImage.CIFilterBuiltins
+import StoreKit
 
 struct ContentView: View {
     @State private var processedImage: Image?
@@ -18,6 +19,9 @@ struct ContentView: View {
     let context = CIContext()
     
     @State private var showingFilters = false
+    
+    @AppStorage("filterCount") var filterCount = 0
+    @Environment(\.requestReview) var requestReview
     
     var body: some View {
         NavigationStack{
@@ -70,9 +74,14 @@ struct ContentView: View {
         showingFilters = true
     }
     
-    func setFilter(_ filter: CIFilter) {
+    @MainActor func setFilter(_ filter: CIFilter) {
         currentFilter = filter
         loadImage()
+        
+        filterCount += 1
+        if filterCount >= 20 {
+            requestReview()
+        }
     }
     
     func applyProcessing() {
