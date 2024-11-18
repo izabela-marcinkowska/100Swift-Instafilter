@@ -43,11 +43,13 @@ struct ContentView: View {
                     Text("Intensity")
                     Slider(value: $filterIntensity)
                         .onChange(of: filterIntensity, applyProcessing)
+                        .disabled((processedImage == nil))
                 }
                 .padding(.vertical)
                 
                 HStack {
                     Button("Change filter", action: changeFilter)
+                        .disabled((processedImage == nil))
                     Spacer()
                     if let processedImage {
                         ShareLink(item: processedImage, preview: SharePreview("Instafilter image", image: processedImage))
