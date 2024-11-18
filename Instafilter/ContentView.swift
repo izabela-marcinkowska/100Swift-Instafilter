@@ -45,6 +45,9 @@ struct ContentView: View {
                 HStack {
                     Button("Change filter", action: changeFilter)
                     Spacer()
+                    if let processedImage {
+                        ShareLink(item: processedImage, preview: SharePreview("Instafilter image", image: processedImage))
+                    }
                     
                 }
             }
