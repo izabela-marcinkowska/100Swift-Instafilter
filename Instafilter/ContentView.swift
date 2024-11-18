@@ -14,6 +14,7 @@ import StoreKit
 struct ContentView: View {
     @State private var processedImage: Image?
     @State private var filterIntensity = 0.5
+    @State private var filterRadius = 0.5
     @State private var selectedItem: PhotosPickerItem?
     @State private var currentFilter: CIFilter = CIFilter.sepiaTone()
     let context = CIContext()
@@ -39,10 +40,14 @@ struct ContentView: View {
                 .onChange(of: selectedItem, loadImage)
             
                 Spacer()
-                HStack {
+                VStack {
                     Text("Intensity")
                     Slider(value: $filterIntensity)
                         .onChange(of: filterIntensity, applyProcessing)
+                        .disabled((processedImage == nil))
+                    Text("Radius")
+                    Slider(value: $filterRadius)
+                        .onChange(of: filterRadius, applyProcessing)
                         .disabled((processedImage == nil))
                 }
                 .padding(.vertical)
@@ -108,6 +113,9 @@ struct ContentView: View {
             let beginImage = CIImage(image: inputImage)
             currentFilter.setValue(beginImage, forKey: kCIInputImageKey)
             
+            await MainActor.run {
+                       applyProcessing()
+                   }
         }
     }
 }
